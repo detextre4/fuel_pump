@@ -1,6 +1,5 @@
 /// Creamos nuestro modulo el cual contendra nuestro Move Package
-module hello_world::hello_world {
-
+module hello_world {
   /// Definimos los modulos los cuales nos permiten importar 
   /// elementos de la blockcahin de Sui
   use std::string;
