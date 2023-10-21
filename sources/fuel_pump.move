@@ -1,28 +1,31 @@
 module fuel_pump::Fuel_pump {
   use std::string::{Self, String, utf8};
-  use sui::object::{Self, UID};
-  use sui::object_table::{Self, ObjectTable};
+  use sui::object::{Self, UID, new};
+  use sui::vec_set::{Self, VecSet, insert};
   use sui::transfer;
   use sui::tx_context::{Self, TxContext};
 
+  // station object to allow users
   struct FuelStation has key, store {
-    id: object::UID,
+    id: UID,
     capability: u8,
-    users: object_table::ObjectTable,
+    users: VecSet<User>,
     slots: u8,
-    horary: string::String,
+    horary: String,
     active: bool
   }
 
+  // user indentifier
   struct User has key, store {
-    id: object::UID,
+    id: UID,
   }
 
-	fun init (ctx: tx_context::TxContext, capability: u8, horary: string::String) {
+  // create station object 
+	fun init (capability: u8, horary: String, ctx: &mut tx_context::TxContext) {
     let fuelStation = &mut FuelStation {
       id: object::new(ctx),
       capability,
-      users: object_table::ObjectTable.new(ctx),
+      users: vec_set::VecSet::empty(),
       slots: 0,
       horary,
       active: true,
@@ -32,13 +35,18 @@ module fuel_pump::Fuel_pump {
 	}
 
 
-	public entry fun join_station(ctx: TxContext, fuelStation: &mut FuelStation) {
+  // join station
+	public entry fun join_station(fuelStation: &mut FuelStation, ctx: &mut TxContext) {
     let user = User { id: object::new(ctx) };
-    let newFuelStation = fuelStation;
 
-    if (fuelStation.slots.contains(user)) {
-      newFuelStation.slots.add(user)
-      fuelStation.slots = newFuelStation.slots
-    }
+    fuelStation.users.insert(user);
 	}
+
+  // // leave station
+	// public entry fun leave_station(ctx: TxContext, fuelStation: &mut FuelStation) {
+	// }
+
+  // // pay pump
+	// public entry fun pay_pump(ctx: TxContext, fuelStation: &mut FuelStation) {
+	// }
 }
