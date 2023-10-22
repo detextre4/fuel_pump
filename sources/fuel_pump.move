@@ -4,7 +4,6 @@ module fuel_pump::Fuel_pump {
   use sui::vec_set::{Self, VecSet};
   use sui::transfer;
   use sui::coin::{Self, Coin};
-  use sui::balance::{Self, Balance};
   use sui::sui::SUI;
   use sui::tx_context::{Self, TxContext};
   use sui::pay::{Self};
@@ -20,7 +19,6 @@ module fuel_pump::Fuel_pump {
     horary: String,
     active: bool,
     price: u64,
-    balance: Balance<Coin<SUI>>,
   }
 
   // create station object 
@@ -33,7 +31,6 @@ module fuel_pump::Fuel_pump {
       horary: string::utf8(b"8am - 8pm"),
       active: true,
       price: 3000000,
-      balance: balance::zero<Coin<SUI>>(),
     };
 
 		transfer::transfer(fuelStation, tx_context::sender(ctx))
@@ -58,5 +55,10 @@ module fuel_pump::Fuel_pump {
 
     pay::keep(sui, ctx);
     leave_station(fuelStation, ctx);
+	}
+
+  // update price
+	public entry fun update_price(fuelStation: &mut FuelStation, sui: &mut Coin<SUI>, _: &TxContext) {
+    fuelStation.price = coin::value(sui)
 	}
 }
