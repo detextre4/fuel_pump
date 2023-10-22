@@ -21,11 +21,13 @@ module fuel_pump::Fuel_pump {
     price: u64,
   }
 
+  const CAP: u8 = 20;
+
   // create station object 
 	fun init (ctx: &mut TxContext) {
     let fuelStation = FuelStation {
       id: object::new(ctx),
-      capability: 20,
+      capability: CAP,
       users: vec_set::empty<address>(),
       slots: 0,
       horary: string::utf8(b"8am - 8pm"),
