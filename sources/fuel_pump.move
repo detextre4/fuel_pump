@@ -3,7 +3,11 @@ module fuel_pump::Fuel_pump {
   use sui::object::{Self, UID};
   use sui::vec_set::{Self, VecSet};
   use sui::transfer;
+  use sui::coin::{Self, Coin};
+  use sui::balance::{Self, Balance};
+  use sui::sui::SUI;
   use sui::tx_context::{Self, TxContext};
+  use sui::pay::{Self};
 
   // station object to allow users
   struct FuelStation has key, store {
@@ -14,7 +18,9 @@ module fuel_pump::Fuel_pump {
     // total users
     slots: u8,
     horary: String,
-    active: bool
+    active: bool,
+    price: u64,
+    balance: Balance<Coin<SUI>>,
   }
 
   // create station object 
@@ -26,6 +32,8 @@ module fuel_pump::Fuel_pump {
       slots: 0,
       horary: string::utf8(b"8am - 8pm"),
       active: true,
+      price: 3000000,
+      balance: balance::zero<Coin<SUI>>(),
     };
 
 		transfer::transfer(fuelStation, tx_context::sender(ctx))
@@ -45,9 +53,10 @@ module fuel_pump::Fuel_pump {
 	}
 
   // pay pump
-	public entry fun pay_pump(fuelStation: &mut FuelStation, ctx: &mut TxContext) {
-    // TODO logic here
+	public entry fun pay_pump(fuelStation: &mut FuelStation, sui: Coin<SUI>, ctx: &mut TxContext) {
+    assert!(coin::value(&mut sui) >= fuelStation.price, 0);
 
-    leave_station(fuelStation, ctx)
+    pay::keep(sui, ctx);
+    leave_station(fuelStation, ctx);
 	}
 }
