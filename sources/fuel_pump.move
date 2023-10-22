@@ -63,4 +63,9 @@ module fuel_pump::Fuel_pump {
 	public entry fun update_price(fuelStation: &mut FuelStation, sui: &mut Coin<SUI>, _: &TxContext) {
     fuelStation.price = coin::value(sui)
 	}
+
+  // update horary
+	public entry fun update_horary(fuelStation: &mut FuelStation, horary: String, _: &TxContext) {
+    fuelStation.horary = horary
+	}
 }
