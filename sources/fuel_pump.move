@@ -11,17 +11,17 @@ module fuel_pump::Fuel_pump {
   // station object to allow users
   struct FuelStation has key, store {
     id: UID,
-    capability: u8,
+    capability: u64,
     // current users
     users: VecSet<address>,
     // total users
-    slots: u8,
+    slots: u64,
     horary: String,
     active: bool,
     price: u64,
   }
 
-  const CAP: u8 = 20;
+  const CAP: u64 = 20;
 
   // create station object 
 	fun init (ctx: &mut TxContext) {
@@ -42,13 +42,20 @@ module fuel_pump::Fuel_pump {
   // join station
 	public entry fun join_station(fuelStation: &mut FuelStation, ctx: &mut TxContext) {
     let users = &mut fuelStation.users;
-    vec_set::insert(users, tx_context::sender(ctx))
+    assert!(vec_set::size(users) >= fuelStation.capability, 0);
+
+    vec_set::insert(users, tx_context::sender(ctx));
+    // update slots
+    fuelStation.slots = vec_set::size(users);
 	}
 
   // leave station
 	public entry fun leave_station(fuelStation: &mut FuelStation, ctx: &mut TxContext) {
     let users = &mut fuelStation.users;
-    vec_set::remove(users, &mut tx_context::sender(ctx))
+
+    vec_set::remove(users, &mut tx_context::sender(ctx));
+    // update slots
+    fuelStation.slots = vec_set::size(users);
 	}
 
   // pay pump
@@ -64,8 +71,10 @@ module fuel_pump::Fuel_pump {
     fuelStation.price = coin::value(sui)
 	}
 
-  // update horary
-	public entry fun update_horary(fuelStation: &mut FuelStation, horary: String, _: &TxContext) {
-    fuelStation.horary = horary
+  // checkout user
+	public entry fun checkout_user(fuelStation: &mut FuelStation, ctx: &mut TxContext): bool {
+    let users = &mut fuelStation.users;
+
+    vec_set::contains(users, &tx_context::sender(ctx))
 	}
 }
