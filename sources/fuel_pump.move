@@ -1,7 +1,7 @@
 module fuel_pump::Fuel_pump {
-  use std::string::{Self, String, utf8};
-  use sui::object::{Self, UID, new};
-  use sui::vec_set::{Self, VecSet, insert};
+  use std::string::{Self, String};
+  use sui::object::{Self, UID};
+  use sui::vec_set::{Self, VecSet};
   use sui::transfer;
   use sui::tx_context::{Self, TxContext};
 
@@ -9,25 +9,22 @@ module fuel_pump::Fuel_pump {
   struct FuelStation has key, store {
     id: UID,
     capability: u8,
-    users: VecSet<User>,
+    // current users
+    users: VecSet<address>,
+    // total users
     slots: u8,
     horary: String,
     active: bool
   }
 
-  // user indentifier
-  struct User has key, store {
-    id: UID,
-  }
-
   // create station object 
-	fun init (capability: u8, horary: String, ctx: &mut tx_context::TxContext) {
-    let fuelStation = &mut FuelStation {
+	fun init (ctx: &mut TxContext) {
+    let fuelStation = FuelStation {
       id: object::new(ctx),
-      capability,
-      users: vec_set::VecSet::empty(),
+      capability: 20,
+      users: vec_set::empty<address>(),
       slots: 0,
-      horary,
+      horary: string::utf8(b"8am - 8pm"),
       active: true,
     };
 
@@ -37,16 +34,20 @@ module fuel_pump::Fuel_pump {
 
   // join station
 	public entry fun join_station(fuelStation: &mut FuelStation, ctx: &mut TxContext) {
-    let user = User { id: object::new(ctx) };
-
-    fuelStation.users.insert(user);
+    let users = &mut fuelStation.users;
+    vec_set::insert(users, tx_context::sender(ctx))
 	}
 
-  // // leave station
-	// public entry fun leave_station(ctx: TxContext, fuelStation: &mut FuelStation) {
-	// }
+  // leave station
+	public entry fun leave_station(fuelStation: &mut FuelStation, ctx: &mut TxContext) {
+    let users = &mut fuelStation.users;
+    vec_set::remove(users, &mut tx_context::sender(ctx))
+	}
 
-  // // pay pump
-	// public entry fun pay_pump(ctx: TxContext, fuelStation: &mut FuelStation) {
-	// }
+  // pay pump
+	public entry fun pay_pump(fuelStation: &mut FuelStation, ctx: &mut TxContext) {
+    // TODO logic here
+
+    leave_station(fuelStation, ctx)
+	}
 }
