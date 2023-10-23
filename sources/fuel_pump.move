@@ -79,17 +79,17 @@ module fuel_pump::Fuel_pump {
   }
 
   // update price
-	entry fun update_price(fs: &mut FuelStation, price: u64, a: &AdminCap) {
+	entry fun update_price(fs: &mut FuelStation, price: u64, ctx: &mut TxContext) {
     assert!(fs.version == VERSION, EWrongVersion);
-    assert!(fs.admin == object::id(a), ENotAdmin);
+    assert!(fs.creator == tx_context::sender(ctx), 0);
 
     fs.price = price
 	}
 
   // update horary
-	entry fun update_horary(fs: &mut FuelStation, horary: String, a: &AdminCap) {
+	entry fun update_horary(fs: &mut FuelStation, horary: String, ctx: &mut TxContext) {
     assert!(fs.version == VERSION, EWrongVersion);
-    assert!(fs.admin == object::id(a), ENotAdmin);
+    assert!(fs.creator == tx_context::sender(ctx), 0);
 
     fs.horary = horary
 	}
