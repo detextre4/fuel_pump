@@ -18,6 +18,7 @@ module fuel_pump::Fuel_pump {
     version: u64,
     /* Associate the `Counter` with its `AdminCap` */
     admin: ID,
+    creator: address,
 
     capability: u64,
     // current users
@@ -49,10 +50,13 @@ module fuel_pump::Fuel_pump {
       id: object::new(ctx),
     };
 
+    let creator: address = tx_context::sender(ctx);
+
     let fs = FuelStation {
       id: object::new(ctx),
       version: VERSION,
       admin: object::id(&admin),
+      creator,
       capability: CAP,
       users: vec_set::empty<address>(),
       slots: 0,
@@ -62,7 +66,7 @@ module fuel_pump::Fuel_pump {
     };
 
     transfer::share_object(fs);
-		transfer::transfer(admin, tx_context::sender(ctx))
+		transfer::transfer(admin, creator)
 	}
 
   // Introduce a migrate function
@@ -98,11 +102,12 @@ module fuel_pump::Fuel_pump {
 	}
 
   // pay pump
-	public entry fun pay_pump(fs: &mut FuelStation, sui: Coin<SUI>, ctx: &mut TxContext) {
+	public entry fun pay_pump(fs: &mut FuelStation, sui: &mut Coin<SUI>, amount: u64, ctx: &mut TxContext) {
     assert!(fs.version == VERSION, EWrongVersion);
-    assert!(coin::value(&mut sui) >= fs.price, 0);
+    assert!(coin::value(sui) >= fs.price, 0);
+    assert!(checkout_user(fs, ctx), 0);
 
-    pay::keep(sui, ctx);
+    pay::split_and_transfer(sui, amount, fs.creator, ctx);
     leave_station(fs, ctx);
 	}
 

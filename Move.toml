@@ -1,7 +1,7 @@
 [package]
 name = "fuel_pump"
 version = "0.0.1"
-published-at = "0x1f149ba29372e9a22c054b65f69a349ed600c2d09f2f68f86d1d300e21eb3dd4"
+published-at = "0xe3b252146adb86e37ab4af05f5452dfac6944055a5183d0256ca749bba33b38f"
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "devnet" }
