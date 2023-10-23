@@ -112,10 +112,10 @@ module fuel_pump::Fuel_pump {
 	}
 
   // update price
-	public entry fun update_price(_: &AdminCap, fs: &mut FuelStation, sui: &mut Coin<SUI>, _: &TxContext) {
+	public entry fun update_price(_: &AdminCap, fs: &mut FuelStation, price: u64, _: &TxContext) {
     assert!(fs.version == VERSION, EWrongVersion);
 
-    fs.price = coin::value(sui)
+    fs.price = price
 	}
 
   // update horary
