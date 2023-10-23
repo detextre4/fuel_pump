@@ -69,6 +69,8 @@ module fuel_pump::Fuel_pump {
 		transfer::transfer(admin, creator)
 	}
 
+  // ------ private functions ------ //
+
   // Introduce a migrate function
   entry fun migrate(fs: &mut FuelStation, a: &AdminCap) {
     assert!(fs.admin == object::id(a), ENotAdmin);
@@ -76,6 +78,24 @@ module fuel_pump::Fuel_pump {
     fs.version = VERSION;
   }
 
+  // update price
+	entry fun update_price(fs: &mut FuelStation, price: u64, a: &AdminCap) {
+    assert!(fs.version == VERSION, EWrongVersion);
+    assert!(fs.admin == object::id(a), ENotAdmin);
+
+    fs.price = price
+	}
+
+  // update horary
+	entry fun update_horary(fs: &mut FuelStation, horary: String, a: &AdminCap) {
+    assert!(fs.version == VERSION, EWrongVersion);
+    assert!(fs.admin == object::id(a), ENotAdmin);
+
+    fs.horary = horary
+	}
+
+
+  // ------ public functions ------ //
 
   // join station
 	public entry fun join_station(fs: &mut FuelStation, ctx: &mut TxContext) {
@@ -109,20 +129,6 @@ module fuel_pump::Fuel_pump {
 
     pay::split_and_transfer(sui, amount, fs.creator, ctx);
     leave_station(fs, ctx);
-	}
-
-  // update price
-	public entry fun update_price(_: &AdminCap, fs: &mut FuelStation, price: u64, _: &TxContext) {
-    assert!(fs.version == VERSION, EWrongVersion);
-
-    fs.price = price
-	}
-
-  // update horary
-	public entry fun update_horary(_: &AdminCap, fs: &mut FuelStation, horary: String, _: &TxContext) {
-    assert!(fs.version == VERSION, EWrongVersion);
-
-    fs.horary = horary
 	}
 
   // checkout user
