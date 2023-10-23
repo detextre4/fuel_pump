@@ -9,7 +9,7 @@ module fuel_pump::Fuel_pump {
   use sui::pay::{Self};
 
   /* Track the current version of the module */
-  const VERSION: u64 = 1;
+  const VERSION: u64 = 5;
 
   // station object to allow users
   struct FuelStation has key, store {
