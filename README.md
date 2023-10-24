@@ -4,14 +4,14 @@ a sui project realized to first latam sui bootcamp
 # how to publish
 run the following commands
 
-1- `sui move build`\n
+1- `sui move build` \
 2- `sui client publish --gas-budget <SPECIFY-GAS>`
 
 # how to call functions
 
 save enviroment variables
 
-1- `export fuel_pump=<OBJECT-ID>`\n
+1- `export fuel_pump=<OBJECT-ID>` \
 2- `export fuel_pump_id=<PACKAGE-ID>`
 
 can run following comands
