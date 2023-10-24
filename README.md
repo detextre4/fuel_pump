@@ -1,5 +1,5 @@
 # fuel_pump
-a sui project realized to first latam sui bootcamp
+A sui project realized to first latam sui bootcamp
 
 # how to publish
 run the following commands
@@ -9,7 +9,7 @@ run the following commands
 
 # how to call functions
 
-save enviroment variables
+Save enviroment variables
 
 1- `export fuel_pump=<OBJECT-ID>` \
 2- `export fuel_pump_id=<PACKAGE-ID>`
