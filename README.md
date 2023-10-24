@@ -4,14 +4,14 @@ a sui project realized to first latam sui bootcamp
 # how to publish
 run the following commands
 
-1- `sui move build`
+1- `sui move build`\n
 2- `sui client publish --gas-budget <SPECIFY-GAS>`
 
 # how to call functions
 
 save enviroment variables
 
-1- `export fuel_pump=<OBJECT-ID>`
+1- `export fuel_pump=<OBJECT-ID>`\n
 2- `export fuel_pump_id=<PACKAGE-ID>`
 
 can run following comands
@@ -22,7 +22,9 @@ can run following comands
 
 * `sui client call --function pay_pump --module Fuel_pump --package $fuel_pump_id --args $fuel_pump <COIN-ID> 3000000 --gas-budget 20000000`
 
-* `sui client call --function update_price --module Fuel_pump --package $fuel_pump_id --args $fuel_pump 4000000 --gas-budget 20000000`
+* `sui client call --function update_price --module Fuel_pump --package $fuel_pump_id --args $fuel_pump <NEW-PRICE> --gas-budget 20000000`
+
+* `sui client call --function update_horary --module Fuel_pump --package $fuel_pump_id --args $fuel_pump <NEW-HORARY> --gas-budget 20000000`
 
 # how to update
 
@@ -32,4 +34,4 @@ can run following comands
 
 3- run `sui move build`
 
-4 run `sui client upgrade --gas-budget 20000000 --upgrade-capability <UPGRADE-CAP>`
+4- run `sui client upgrade --gas-budget 20000000 --upgrade-capability <UPGRADE-CAP>`
