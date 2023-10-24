@@ -28,9 +28,9 @@ can run following comands
 
 # how to update
 
-1- update const VERSION value in the .move file
+1- update **const VERSION** value in the .move file
 
-2- update published-at value in the Move.toml file, must be the current package id
+2- update **published-at** value in the Move.toml file, must be the current package id
 
 3- run `sui move build`
 
